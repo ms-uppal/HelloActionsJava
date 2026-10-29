@@ -1,0 +1,48 @@
+# The name displayed for this workflow in the GitHub Actions tab.
+name: Hello World with Java
+
+# The events that start this workflow.
+on:
+  # Run automatically when code is pushed to the repository.
+  push:
+    # Limit the automatic push trigger to the main branch.
+    branches:
+      - main
+  # Add a "Run workflow" button so a user can start it manually from the Actions tab.
+  workflow_dispatch:
+
+# A workflow contains one or more jobs.
+jobs:
+  # Internal identifier for this job.
+  hello-java:
+    # The friendly name shown for the job on the Actions page.
+    name: Run the Java Hello World program
+    # Use a temporary Ubuntu virtual machine supplied by GitHub.
+    runs-on: ubuntu-latest
+
+    # Steps are executed from top to bottom.
+    steps:
+      # Step 1: Download the repository files onto the virtual machine.
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      # Step 2: Install and configure the Java Development Kit (JDK) for this job.
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          # Use the Eclipse Temurin distribution of OpenJDK.
+          distribution: temurin
+          # Select Java version 17 for compilation and execution.
+          java-version: '17'
+
+      # Step 3: Compile the Java source file into Hello.class.
+      - name: Compile the Java program
+        run: javac Hello.java
+
+      # Step 4: Execute the compiled Java class.
+      - name: Run the Java program
+        env:
+          # Environment variables are made available to the program.
+          # Hello.java reads this value with System.getenv().
+          WHO_TO_GREET: 'GitHub Actions Student'
+        run: java Hello
